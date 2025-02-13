@@ -4,7 +4,6 @@ print("popping:")
 set1 = set(range(7))
 set2 = set(range(7,14))
 games = [set1, set2]
-pops = {"g1":[], "g2":[]}
 for i in range(1000):
 	g1, g2 = random.sample(games,2)
 	p1 = set1.pop()
@@ -19,7 +18,6 @@ print("\nshuffling")
 set1 = set(range(7))
 set2 = set(range(7,14))
 games = [set1, set2]
-pops = {"g1":[], "g2":[]}
 for i in range(1000):
 	g1, g2 = random.sample(games,2)
 	p1 = random.sample(sorted(set1), 1)[0]

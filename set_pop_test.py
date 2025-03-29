@@ -14,9 +14,8 @@ for i in range(10):
 print(set1)
 print(set2)
 
-print("\nshuffling")
-
 #proposed alternate method
+print("\nshuffling")
 set1 = set(range(7))
 set2 = set(range(7,14))
 games = [set1, set2]

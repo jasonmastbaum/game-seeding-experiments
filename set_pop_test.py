@@ -1,5 +1,6 @@
 import random
 
+#current method
 print("popping:")
 set1 = set(range(7))
 set2 = set(range(7,14))
@@ -15,6 +16,7 @@ print(set2)
 
 print("\nshuffling")
 
+#proposed alternate method
 set1 = set(range(7))
 set2 = set(range(7,14))
 games = [set1, set2]

@@ -2,6 +2,7 @@ import itertools
 import random
 
 import numpy as np
+import pandas as pd
 
 '''
 for this test, we are going to create a two-board tournament where one round 
@@ -184,6 +185,79 @@ while len(players_to_assign) > 0:
 
 print("\ngames: ", games)
 
+'''
+assign countries for the first game
+'''
+players_to_assign_countries = list(games[0])
+
+
+# power_adjacencies_array = [
+#     [0,0,0,1,2,2,2],
+#     [0,0,2,2,0,2,0],
+#     [0,2,0,2,1,0,0],
+#     [1,2,2,0,1,2,0],
+#     [2,0,1,1,0,2,2],
+#     [2,2,0,2,2,0,2],
+#     [2,0,0,1,2,2,0]
+# ]
+
+power_adjacencies_array = [
+    [0,0,0,1,3,3,3],
+    [0,0,3,3,0,3,0],
+    [0,3,0,3,1,0,0],
+    [1,3,3,0,1,3,0],
+    [3,0,1,1,0,3,3],
+    [3,3,0,3,3,0,3],
+    [3,0,0,1,3,3,0]
+]
+
+countries = ["Austria", "England", "France", "Germany", "Italy", "Russia", "Turkey"]
+
+power_adjacencies = pd.DataFrame(power_adjacencies_array, index=countries, columns=countries)
+
+'''
+for this example we don't care which country people have already played
+'''
+countries_already_played_array = []
+for i in range(7):
+    temp = [0]*7
+    temp[i] = 1
+    countries_already_played_array.append(temp)
+
+countries_already_played = pd.DataFrame(countries_already_played_array,
+                                        index=countries,
+                                        columns=players_to_assign_countries)
+countries_already_played = countries_already_played.transpose()
+
+all_possible_orderings = list(itertools.permutations(players_to_assign_countries))
+all_possible_assignments = [list(zip(ordering, countries)) for ordering in all_possible_orderings]
+
+def score_game(game):
+    all_pairs = list(itertools.combinations(game, 2))
+
+    already_played = sum(countries_already_played.loc[p]*20 for p in game)
+
+    times_played = [games_matrix[pair[0][0], pair[1][0]] for pair in all_pairs]
+    country_adjacencies = [power_adjacencies.loc[pair[0][1], pair[1][1]] for pair in all_pairs]
+
+    adjacency_score = sum([a*b for a, b in zip(times_played, country_adjacencies)])
+
+    return already_played + adjacency_score
+
+assignment_scores = [score_game(game) for game in all_possible_assignments]
+print("\nworst score: ", max(assignment_scores))
+
+'''
+more than one assignment set could be the best game, so pick just one
+'''
+
+best_games = np.where(assignment_scores == min(assignment_scores))[0]
+best_game = np.random.choice(best_games, size=1)[0]
+
+assignment = all_possible_assignments[best_game]
+
+print("\nfirst game assigned :",assignment)
+print("score: ", score_game(assignment))
 
 '''TODO code below to try to intelligently place the remaining players
 based on minimzing number of games played with the players already in
